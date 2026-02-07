@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio GriffinRock – Odlewnia Żyje!</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: #000;
+            color: #ddd;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .side-decoration {
+            position: fixed;
+            top: 0; bottom: 0;
+            width: 18vw;
+            max-width: 280px;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.22;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .left-decor { left: 0; background-image: url('https://assets.warhammer-community.com/li_darkmechanicumlore-oct17-image1.jpg'); }
+        .right-decor { right: 0; background-image: url('https://assets.warhammer-community.com/li_darkmechanicumlore-oct17-image2.jpg'); }
+        .container {
+            flex: 1;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px 40px;
+            position: relative;
+            z-index: 1;
+        }
+        #logo {
+            display: block;
+            max-width: 40%;
+            height: auto;
+            margin: 50px auto 40px;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(184,134,11,0.45);
+            background: rgba(0,0,0,0.5);
+            padding: 12px;
+        }
+        #login {
+            background: linear-gradient(135deg, rgba(18,18,18,0.95), rgba(30,20,10,0.9));
+            border: 1px solid #b8860b44;
+            border-radius: 20px;
+            padding: 60px 40px;
+            backdrop-filter: blur(8px);
+            text-align: center;
+            max-width: 520px;
+            margin: 0 auto 80px;
+        }
+        #login h1 {
+            color: #ffd700;
+            text-shadow: 0 0 15px #b8860b;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+        input, button {
+            width: 100%;
+            padding: 18px;
+            margin: 16px 0;
+            font-size: 1.25rem;
+            border-radius: 12px;
+            border: none;
+        }
+        input { background: #111; color: #eee; }
+        button {
+            background: linear-gradient(to right, #b8860b, #d4a017);
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        button:hover { transform: translateY(-3px); box-shadow: 0 8px 25px #b8860b77; }
+        #player {
+            display: none;
+            background: #0f0f0f;
+            border-radius: 24px;
+            padding: 50px 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.95);
+            border: 1px solid #444;
+            position: relative;
+            overflow: hidden;
+            margin: 0 20px 60px;
+        }
+        #player::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('https://images.template.net/356098/Black-Gothic-Background-edit-online-3.jpg') repeat;
+            opacity: 0.10;
+            z-index: 0;
+            pointer-events: none;
+        }
+        #player > * { position: relative; z-index: 1; }
+        #player h2 {
+            color: #ffd700;
+            text-shadow: 0 0 14px #b8860b;
+            margin-bottom: 25px;
+            font-size: 2.6rem;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+        /* Cytaty – pod playerem */
+        #quote {
+            font-size: 1.2rem;
+            color: #ffdd88;
+            text-align: center;
+            margin: 20px 0 30px;
+            min-height: 3em;
+            font-style: italic;
+            opacity: 0.9;
+            transition: opacity 1.2s;
+        }
+        #quote:hover { opacity: 1; }
+        .ticker {
+            background: #0a0a0a;
+            border-top: 1px solid #b8860b44;
+            padding: 18px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            font-size: 1.35rem;
+            color: #ffd700;
+            text-shadow: 0 0 12px #b8860b;
+            margin-top: auto;
+            position: relative;
+        }
+        .ticker span {
+            display: inline-block;
+            padding-left: 100%;
+            animation: ticker 45s linear infinite;          /* ← wolniejszy ticker – 45 sekund */
+            opacity: 0.92;
+        }
+        .ticker span:hover { opacity: 1; transform: scale(1.05); text-shadow: 0 0 20px #ffd700; }
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+        .footer-bg {
+            background: url('https://assets.warhammer-community.com/li_darkmechanicumlore-oct17-image4.jpg') center bottom / cover no-repeat;
+            height: 240px;
+            width: 100%;
+            margin-top: auto;
+            position: relative;
+        }
+        .footer-text {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #aaa;
+            font-size: 1rem;
+            text-shadow: 0 1px 6px #000;
+        }
+    </style>
+</head>
+<body>
+<div class="side-decoration left-decor"></div>
+<div class="side-decoration right-decor"></div>
+
+<div class="container">
+    <img id="logo" src="https://masterpiecer-images.s3.yandex.net/9d20e4157bf411eeb17bbaea8797b5f2:upscaled" alt="GriffinRock Logo">
+
+    <div id="login">
+        <h1>Radio GriffinRock</h1>
+        <p>Dostęp tylko dla załogi odlewni<br>Podaj kod:</p>
+        <input type="password" id="pass" placeholder="Hasło...">
+        <button onclick="checkPass()">Wejść na halę</button>
+    </div>
+
+    <div id="player">
+        <h2>GRIFFIN ROCK ODLEWNIA</h2>
+        
+        <!-- Poprawiony embed Caster.fm – wg aktualnej dokumentacji -->
+        <div 
+          class="cstrEmbed"
+          data-rendered="false"
+          data-type="streamPlayer"
+          data-publicToken="7133ebfa-bee1-4904-a9c5-0f169a0d757d"
+          data-theme="dark"
+          data-color="b8860b"
+        ></div>
+
+        <!-- Cytaty pod playerem -->
+        <div id="quote"></div>
+    </div>
+</div>
+
+<div class="ticker">
+    <span id="tickerText"></span>
+</div>
+
+<div class="footer-bg">
+    <div class="footer-text">
+        © 2026 Radio GriffinRock – Odlewnia Mechanicum
+    </div>
+</div>
+
+<script>
+// Cytaty o ogniu i brązie
+const quotes = [
+    "Ogień to nie wróg – to jedyny przyjaciel, który nigdy nie zawodzi... chyba że zapomnisz mu piwa.",
+    "Brąz nie lubi zimnych rąk – ale za to uwielbia gorące żarty.",
+    "W odlewni jak w piekle: dużo ciepła, mało światła i wszyscy krzyczą na siebie nawzajem.",
+    "Stop brązu to jak małżeństwo – mieszasz różne rzeczy, aż w końcu coś pięknego wyjdzie... albo eksploduje.",
+    "Ogień czyści wszystko – nawet głupie pomysły szefa.",
+    "Brąz płynie jak plotki w szatni – szybko i wszędzie.",
+    "Bez ognia nie ma brązu. Bez brązu nie ma kasy. Bez kasy nie ma piwa. Logika odlewniana.",
+    "Imperator patrzy na nas z góry... i pewnie myśli: 'Kurde, znowu te same żarty o ogniu'.",
+    "Jak brąz się nie leje – to znaczy, że ktoś zapomniał odpalić dowcip.",
+    "Ogień jest jak ekipa na zmianie – pali się szybko i zostawia po sobie tylko dym i wspomnienia.",
+    "Brąz to metal, który przetrwał ogień – tak jak my przetrwamy kolejną zmianę.",
+    "Gdy piec huczy, a brąz śpiewa – to znak, że Imperator jest zadowolony... albo po prostu jest gorąco."
+];
+
+function showRandomQuote() {
+    const quoteEl = document.getElementById('quote');
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    quoteEl.style.opacity = 0;
+    setTimeout(() => {
+        quoteEl.innerHTML = `„${randomQuote}”`;
+        quoteEl.style.opacity = 0.9;
+    }, 800);
+}
+
+showRandomQuote();
+setInterval(showRandomQuote, 45000);
+
+// Ticker
+const tickerPhrases = [
+    "FOR THE EMPEROR WE CAST",
+    "ART STUDIO",
+    "SZCZYGLICE WELCOME TO",
+    "ARTUR URUG MAG THRAKA",
+    "MARNEUS KARNAS",
+    "PEREZIUS OPTIMUS",
+    "KAZUAR",
+    "BRĄZ PŁYWA JAK PIWO PO ZMIANIE",
+    "OGIEŃ TO NASZ DRUGI SZEF",
+    "GRIFFINROCK – BO BRĄZ TO MY",
+    "STOP BRĄZU = STOP ŻARTÓW",
+    "PIEC HUCZY – IMPERATOR SŁUCHA"
+];
+
+function generateDynamicTicker() {
+    let text = "";
+    let last = "";
+   
+    for (let i = 0; i < 35; i++) {
+        let random;
+        do {
+            random = tickerPhrases[Math.floor(Math.random() * tickerPhrases.length)];
+        } while (random === last);
+       
+        text += random + " • ";
+        last = random;
+    }
+   
+    document.getElementById('tickerText').innerText = text;
+}
+
+generateDynamicTicker();
+setInterval(generateDynamicTicker, 180000);
+
+function checkPass() {
+    const input = document.getElementById('pass').value.trim();
+    const correct = "odlewamy2026";
+    if (input === correct) {
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('player').style.display = 'block';
+    } else {
+        alert("Kod niepoprawny.");
+    }
+}
+</script>
+
+<!-- Loader widgetu Caster.fm Cloud -->
+<script src="https://cdn.cloud.caster.fm/widgets/embed.js"></script>
+
+</body>
+</html>
